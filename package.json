@@ -1,6 +1,6 @@
 {
   "name": "@freik/elect-render-utils",
-  "version": "0.0.5",
+  "version": "0.1.0",
   "description": "Kevin Frei's Electron Render utilities",
   "module": "./lib/esm/index.js",
   "main": "./lib/cjs/index.js",
@@ -37,7 +37,8 @@
   "peerDependencies": {
     "@freik/core-utils": "^0.34.0",
     "@freik/web-utils": "^0.0.4",
-    "@freik/elect-main-utils": "^0.0.4",
+    "@freik/elect-main-utils": "^0.1.0",
+    "@freik/electron-renderer": "^0.1.0",
     "electron": "^16.0.5",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
