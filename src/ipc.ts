@@ -1,8 +1,6 @@
 import { MakeError, MakeLogger, SeqNum, Type } from '@freik/core-utils';
 import { IpcRenderer } from 'electron';
 import type { IpcRendererEvent } from 'electron/main';
-import { ObjectEncodingOptions, OpenMode, PathLike } from 'fs';
-import { FileHandle } from 'fs/promises';
 
 const log = MakeLogger('ipc', true);
 const err = MakeError('ipc-err');
@@ -79,19 +77,21 @@ export function HandleMessage(message: unknown): void {
 }
 
 type ReadFile1 = (
-  path: PathLike | FileHandle,
-  options?: { encoding?: null; flag?: OpenMode } | null,
+  path: string | URL,
+  options?: { encoding?: null; flag?: string | number } | null,
 ) => Promise<Buffer>;
 
 type ReadFile2 = (
-  path: PathLike | FileHandle,
-  options: { encoding: BufferEncoding; flag?: OpenMode } | BufferEncoding,
+  path: string | URL,
+  options:
+    | { encoding: BufferEncoding; flag?: string | number }
+    | BufferEncoding,
 ) => Promise<string>;
 
 type ReadFile3 = (
-  path: PathLike | FileHandle,
+  path: string | URL,
   options?:
-    | (ObjectEncodingOptions & { flag?: OpenMode })
+    | { flag?: string | number; encoding?: BufferEncoding | null | undefined }
     | BufferEncoding
     | null,
 ) => Promise<string | Buffer>;
