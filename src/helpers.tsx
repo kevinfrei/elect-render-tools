@@ -11,7 +11,7 @@ export function useListener(
   });
 }
 
-export default function FreikElem(): JSX.Element {
+export function FreikElem(): JSX.Element {
   useEffect(InitialWireUp);
   /*
   const callback = useMyTransaction(
