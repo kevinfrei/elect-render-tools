@@ -1,6 +1,5 @@
 import { MakeError, MakeLogger, SeqNum, Type } from '@freik/core-utils';
-import { IpcRenderer } from 'electron';
-import type { IpcRendererEvent } from 'electron/main';
+import { IpcRenderer, IpcRendererEvent } from 'electron';
 
 const log = MakeLogger('ipc', true);
 const err = MakeError('ipc-err');

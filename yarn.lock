@@ -2801,15 +2801,12 @@ __metadata:
   dependencies:
     "@freik/build-tools": ^3.1.6
     "@freik/core-utils": ^0.34.0
-    "@freik/web-utils": ^0.0.4
+    "@freik/web-utils": ^0.1.0
     "@types/jest": ^27.0.3
     "@types/react": ^17.0.37
     "@types/react-dom": ^17.0.11
     "@types/react-test-renderer": ^17.0.1
-    "@typescript-eslint/eslint-plugin": ^5.7.0
-    "@typescript-eslint/parser": ^5.7.0
     electron: ^16.0.5
-    electron-is-dev: ^2.0.0
     eslint: ^8.5.0
     eslint-config-prettier: ^8.3.0
     eslint-plugin-import: ^2.25.3
@@ -2831,17 +2828,19 @@ __metadata:
     typescript: ^4.5.4
   peerDependencies:
     "@freik/core-utils": ^0.34.0
+    "@freik/elect-main-utils": ^0.1.0
+    "@freik/electron-renderer": ^0.1.0
+    "@freik/web-utils": ^0.1.0
     electron: ^16.0.5
-    electron-is-dev: ^2.0.0
     react: ^17.0.2
     react-dom: ^17.0.2
     recoil: ^0.5.2
   languageName: unknown
   linkType: soft
 
-"@freik/web-utils@npm:^0.0.4":
-  version: 0.0.4
-  resolution: "@freik/web-utils@npm:0.0.4"
+"@freik/web-utils@npm:^0.1.0":
+  version: 0.1.0
+  resolution: "@freik/web-utils@npm:0.1.0"
   peerDependencies:
     "@fluentui/react": ^8.48.0
     "@fluentui/react-hooks": ^8.3.8
@@ -2849,7 +2848,7 @@ __metadata:
     react: ^17.0.2
     react-dom: ^17.0.2
     recoil: ^0.5.2
-  checksum: e139838bd5f5253a12fb54191a1f1cd68f1183ec2e72aac4e287d9f7a3d67ac844bbc9ec11d7fa6898793c1012e612279c2a37ac6e2f12b98552c4166b246765
+  checksum: 19eb33a3d605c7d6921b751c41b99fcae2444f969c503a00390f3fba30f39bf8aae18982aecbb18b4d4fe11a56cefc9d6c5c80069bc18265bff3a467bd3c79d5
   languageName: node
   linkType: hard
 
@@ -3866,7 +3865,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/eslint-plugin@npm:^5.5.0, @typescript-eslint/eslint-plugin@npm:^5.7.0":
+"@typescript-eslint/eslint-plugin@npm:^5.5.0":
   version: 5.7.0
   resolution: "@typescript-eslint/eslint-plugin@npm:5.7.0"
   dependencies:
@@ -3921,7 +3920,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/parser@npm:^5.5.0, @typescript-eslint/parser@npm:^5.7.0":
+"@typescript-eslint/parser@npm:^5.5.0":
   version: 5.7.0
   resolution: "@typescript-eslint/parser@npm:5.7.0"
   dependencies:
@@ -6573,13 +6572,6 @@ __metadata:
   bin:
     ejs: ./bin/cli.js
   checksum: 81a9cdea0b4ded3b5a4b212b7c17e20bb07468f08394e2d519708d367957a70aef3d282a6d5d38bf6ad313ba25802b9193d4227f29b084d2ee0f28d115141d48
-  languageName: node
-  linkType: hard
-
-"electron-is-dev@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "electron-is-dev@npm:2.0.0"
-  checksum: 7393f46f06153d70a427ea904c60a092e50fbf1015c26c342cebb8324ada8c9e0c0f1f02867af56d9cc76f47be17da8cb311ea6bdc83343e7ebd2323ec4014c8
   languageName: node
   linkType: hard
 

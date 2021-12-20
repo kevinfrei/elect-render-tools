@@ -3,6 +3,7 @@ import { NativeImage, OpenDialogSyncOptions } from 'electron';
 import { CallMain, FreikWindow } from './ipc.js';
 
 declare let window: FreikWindow;
+
 export function IsDev(): boolean {
   return window.freik !== undefined && window.freik.isDev === true;
 }
