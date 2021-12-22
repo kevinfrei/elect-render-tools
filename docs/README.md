@@ -1,3 +1,5 @@
+@freik/elect-render-utils / [Exports](modules.md)
+
 # @freik/elect-main-utils
 
 These are tools & utilities for the Electron 'render' process within the normal

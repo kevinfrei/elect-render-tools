@@ -7,10 +7,24 @@ const err = MakeError('ipc-err');
 export type ListenKey = { key: string; id: string };
 export type MessageHandler = (val: unknown) => void;
 
+/**
+ * @async
+ * Read a key-value from Electron persistent storage
+ *
+ * @param key The key to read
+ * @returns A promise that resolves to the value read (or void if none found)
+ */
 export async function ReadFromStorage(key: string): Promise<string | void> {
   return await CallMain('read-from-storage', key, Type.isString);
 }
 
+/**
+ * @async
+ * Write a key-value pair to Electron persistent storage
+ *
+ * @param key The key to write
+ * @param data The value to be written
+ */
 export async function WriteToStorage(key: string, data: string): Promise<void> {
   await InvokeMain('write-to-storage', [key, data]);
 }
@@ -20,13 +34,20 @@ const sn = SeqNum('Listen');
 // map of message names to map of id's to funtions
 const listeners = new Map<string, Map<string, MessageHandler>>();
 
-// Subscribe to the message
+/**
+ * This subscribes the `handler` to listen for messages coming from the
+ * main process.
+ *
+ * @param key The message key identified to listen for
+ * @param handler The function to invoke upon receipt of the message
+ * @returns the key to use to unsubscribe
+ */
 export function Subscribe(
   key: string,
   handler: (val: unknown) => void,
 ): ListenKey {
   const theKey = { key, id: sn() };
-  let handlerMap: Map<string, MessageHandler> | void = listeners.get(key);
+  let handlerMap = listeners.get(key);
   if (!handlerMap) {
     handlerMap = new Map<string, MessageHandler>();
     listeners.set(key, handlerMap);
@@ -35,7 +56,11 @@ export function Subscribe(
   return theKey;
 }
 
-// Remove listener from the message
+/**
+ * Unsubscribe from a particular message
+ *
+ * @param listenKey The key returned by {@link Subscribe}
+ */
 export function Unsubscribe(listenKey: ListenKey): void {
   const lstn = listeners.get(listenKey.key);
   if (lstn) {
@@ -45,7 +70,7 @@ export function Unsubscribe(listenKey: ListenKey): void {
 
 // Called when an async message comes in from the main process
 // Ideally, these should just be subscribed to as part of an AtomEffect
-export function HandleMessage(message: unknown): void {
+function HandleMessage(message: unknown): void {
   // Walk the list of ID's to see if we've got anything with a format of:
   // { "id" : data }
   // This has an interesting side effect of letting the server process
@@ -102,6 +127,7 @@ type FreikConnector = {
   readFile: ReadFile1 | ReadFile2 | ReadFile3;
 };
 
+/** @ignore */
 export interface FreikWindow extends Window {
   freik?: FreikConnector;
   initApp?: () => void;
@@ -125,18 +151,38 @@ function listener(_event: IpcRendererEvent, data: unknown) {
   }
 }
 
+/** @ignore */
 export function InitialWireUp(): () => void {
   if (window.freik !== undefined) {
     err('ipc is being set!');
     // Set up listeners for any messages that we might want to asynchronously
     // send from the main process
     window.freik.ipc.on('async-data', listener);
+    // get the isDev value (because electron-is-dev doesn't work in the renderer)
+    CallMain('is-dev', '', Type.isBoolean)
+      .then((isdev) => {
+        if (window.freik !== undefined && Type.isBoolean(isdev)) {
+          window.freik.isDev = isdev;
+        }
+      })
+      .catch(err);
   } else {
     err('ipcSet is not set!');
   }
   return () => window.freik?.ipc.removeListener('async-data', listener);
 }
 
+/**
+ * @async
+ * Invoke a remote function with no type checking or translation.
+ * You probably want to use {@link CallMain} or {@link PostMain} instead.
+ *
+ * @template T The (implied) type of the key to send
+ *
+ * @param channel The channel to send a message to
+ * @param key The key to communicate to the message (if any)
+ * @returns A promise that resolves to the result of the RPC
+ */
 export async function InvokeMain<T>(
   channel: string,
   key?: T,
@@ -156,35 +202,39 @@ export async function InvokeMain<T>(
   return result;
 }
 
+/**
+ * @async
+ * Call a remote function with type checking on the return value.
+ * If you have no return type, use {@link PostMain} instead.
+ *
+ * @param channel The channel to send a message to
+ * @param key The key to communicat to the message
+ * @param typecheck The typecheck function to validate the return type R
+ * @returns A promise that resolves to the typechecked return value of the RPC
+ */
 export async function CallMain<R, T>(
   channel: string,
   key: T,
   typecheck: (val: unknown) => val is R,
 ): Promise<R | void> {
-  let result: unknown;
-  if (!window.freik) throw Error('nope');
-  if (!Type.isUndefined(key)) {
-    log(`CallMain("${channel}", "...")`);
-    // eslint-disable-next-line
-    result = await window.freik.ipc.invoke(channel, key);
-    log(`CallMain ("${channel}" "...") returned:`);
-  } else {
-    log(`CallMain("${channel}")`);
-    // eslint-disable-next-line
-    result = await window.freik.ipc.invoke(channel);
-    log(`CallMain ("${channel}") returned:`);
-  }
-  log(result);
+  const result = await InvokeMain(channel, key);
   if (typecheck(result)) {
     return result;
   }
   err(
     `CallMain(${channel}, <T>, ${typecheck.name}(...)) result failed typecheck`,
+    result,
   );
-  err(result);
 }
 
-export async function PostMain<T>(channel: string, key: T): Promise<void> {
-  const isVoid = (a: unknown): a is void => true;
-  return CallMain(channel, key, isVoid);
+/**
+ * @async
+ * Call a remote function with validation of a void result.
+ *
+ * @param channel The channel to send a message to
+ * @param key The key to communicate to the message
+ * @returns A promise that resolves when the RPC has returned
+ */
+export async function PostMain<T>(channel: string, key?: T): Promise<void> {
+  return CallMain(channel, key, (a: unknown): a is void => true);
 }

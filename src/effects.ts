@@ -18,6 +18,7 @@ import {
 const log = MakeLogger('freik-effects');
 const err = MakeError('freik-effects-err');
 
+/** @ignore */
 export type AtomEffectParams<T> = {
   node: RecoilState<T>;
   trigger: 'get' | 'set';
@@ -40,10 +41,21 @@ export type AtomEffectParams<T> = {
   ) => void;
 };
 
+/**
+ * At atom effect that uses the provided stringification/destringification
+ * functions to get/set a value that gets saved & loaded from the app's
+ * persistent data storage (implemented in @freik/elect-main-utils)
+ *
+ * @template T The type of the atom (implied from the to/fromString functions)
+ *
+ * @param toString Translation function to a string for communication
+ * @param fromString Translation function from a string for communication
+ * @returns The Recoil effect
+ */
 export function translateToMain<T>(
   toString: (input: T) => string,
   fromString: (input: string) => T | void,
-) {
+): AtomEffect<T> {
   return ({ node, trigger, setSelf, onSet }: AtomEffectParams<T>): void => {
     if (trigger === 'get') {
       ReadFromStorage(node.key)
@@ -72,13 +84,16 @@ export function translateToMain<T>(
 }
 
 /**
- * At atom effect for pulling data from the IPC channel, with no ability to
- * push data *back* through the IPC channel (i.e. one way from Main :)
+ * At atom effect for pulling data from the IPC channel, with asynchronous
+ * setting from the main process, but with no ability to push data *back*
+ * through the IPC channel (i.e. one way from Main :)
+ *
+ * @template T the type of the atom (implied from the getter)
+ *
  * @param get The function (or promise) that gets the value
- * @param asyncKey The (optional) key for an asynchronous assignment
- * @param asyncDataCoercion The (required if asyncKey is specified) value that
- * takes the message from Main and translates it to the T datatype (or returns
- * nothing if it's incorrect)
+ * @param asyncKey The key for an asynchronous assignment
+ * @param asyncDataCoercion The value that takes the message from Main and
+ * translates it to the T datatype (or returns nothing if it's incorrect)
  */
 export function oneWayFromMain<T>(
   get: () => T | Promise<T>,
@@ -86,6 +101,17 @@ export function oneWayFromMain<T>(
   asyncDataCoercion: (data: unknown) => T | undefined,
 ): AtomEffect<T>;
 
+/**
+ * At atom effect for pulling data from the IPC channel, with no ability to
+ * push data *back* through the IPC channel (i.e. one way from Main :)
+ *
+ * This version doesn't include the ability to update the value asynchronously
+ * from the main process.
+ *
+ * @template T the type of the atom (implied from the getter)
+ *
+ * @param get The function (or promise) that gets the value
+ */
 export function oneWayFromMain<T>(get: () => T | Promise<T>): AtomEffect<T>;
 
 export function oneWayFromMain<T>(
@@ -144,8 +170,16 @@ export function oneWayFromMain<T>(
  * An Atom effect to acquire the value from main, and save it back when
  * modified, after processing it from the original type to JSON using Pickling.
  *
- * @param {boolean} asyncUpdates
- * Optionally true if you also need to actively respond to server changes
+ * @template T
+ * Type of the atom (implied from the function types passed in)
+ *
+ * @param toPickleable
+ * The function to translate the type T to a pickleable type
+ * @param fromUnpickled
+ * The function to translate from the pickleable type to T
+ * @param asyncUpdates
+ * Optionally true if you also need to respond to asynchronous server (main)
+ * side changes
  *
  * @returns an AtomEffect<T>
  */
@@ -219,6 +253,16 @@ export function bidirectionalSyncWithTranslate<T>(
   };
 }
 
+/**
+ * An Atom effect to acquire the value from main, and save it back when
+ * modified, after processing it from the original type to JSON using Pickling.
+ *
+ * @template T the type of the atom
+ *
+ * @param asyncUpdates
+ * Optionally true if you also need to respond to asynchronous server (main)
+ * side changes
+ */
 export function syncWithMain<T>(asyncUpdates?: boolean): AtomEffect<T> {
   return bidirectionalSyncWithTranslate<T>(
     (a) => a as unknown,
