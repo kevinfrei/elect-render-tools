@@ -1,7 +1,7 @@
 import { MakeError, MakeLogger, SeqNum, Type } from '@freik/core-utils';
 import { IpcRenderer, IpcRendererEvent } from 'electron';
 
-const log = MakeLogger('ipc', true);
+const log = MakeLogger('ipc');
 const err = MakeError('ipc-err');
 
 export type ListenKey = { key: string; id: string };
@@ -154,7 +154,7 @@ function listener(_event: IpcRendererEvent, data: unknown) {
 /** @ignore */
 export function InitialWireUp(): () => void {
   if (window.freik !== undefined) {
-    err('ipc is being set!');
+    log('ipc is being set!');
     // Set up listeners for any messages that we might want to asynchronously
     // send from the main process
     window.freik.ipc.on('async-data', listener);
