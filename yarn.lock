@@ -3981,7 +3981,7 @@ __metadata:
   dependencies:
     "@freik/build-tools": ^3.2.1
     "@freik/core-utils": ^1.0.0
-    "@freik/web-utils": ^0.1.2
+    "@freik/web-utils": ^0.2.0
     "@types/jest": ^27.4.0
     "@types/react": ^17.0.39
     "@types/react-dom": ^17.0.11
@@ -4011,28 +4011,28 @@ __metadata:
     typedoc-plugin-markdown: ^3.11.13
     typescript: ^4.5.5
   peerDependencies:
-    "@freik/core-utils": ^0.34.0
-    "@freik/elect-main-utils": ^0.1.2
-    "@freik/electron-renderer": ^0.1.2
+    "@freik/core-utils": ^1.0.0
+    "@freik/elect-main-utils": ^0.2.0
+    "@freik/electron-renderer": ^0.2.0
     "@freik/web-utils": ^0.1.0
-    electron: ^16.0.8
+    electron: ^17.0.0
     react: ^17.0.2
     react-dom: ^17.0.2
     recoil: ^0.6.1
   languageName: unknown
   linkType: soft
 
-"@freik/web-utils@npm:^0.1.2":
-  version: 0.1.2
-  resolution: "@freik/web-utils@npm:0.1.2"
+"@freik/web-utils@npm:^0.2.0":
+  version: 0.2.0
+  resolution: "@freik/web-utils@npm:0.2.0"
   peerDependencies:
-    "@fluentui/react": ^8.48.0
-    "@fluentui/react-hooks": ^8.3.8
-    "@freik/core-utils": ^0.34.0
+    "@fluentui/react": ^8.52.0
+    "@fluentui/react-hooks": ^8.3.0
+    "@freik/core-utils": ^1.0.0
     react: ^17.0.2
     react-dom: ^17.0.2
     recoil: ^0.6.1
-  checksum: 6218c1f360ae70fc50c4a4f307fb28661fe90120423fe951d33c79f2890e24f861723d2d21f95f8a53af2662dd0e0b31e300b24b0afa63f81186ca80ab1c39ea
+  checksum: a7371df98148b0cc048dc7b324e7e2631267d192d47c2cc4d2e3e6f5e86ac30024c78bb9d932537b74bac0eb719ea54445d96e2e6c51248d7ba96103d673c0c3
   languageName: node
   linkType: hard
 
