@@ -149,7 +149,7 @@ export function oneWayFromMain<T>(
         }
       });
     }
-    onSet((newVal, oldVal) => {
+    onSet((newVal /* , oldVal */) => {
       if (newVal instanceof DefaultValue) {
         return;
       }
