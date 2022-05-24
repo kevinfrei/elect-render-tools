@@ -1,6 +1,6 @@
 {
   "name": "@freik/elect-render-utils",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Kevin Frei's Electron Render utilities",
   "module": "./lib/esm/index.js",
   "main": "./lib/cjs/index.js",
@@ -21,7 +21,7 @@
     "lint": "yarn run eslint --fix --ext .ts src",
     "### NPM lifecycle stuff ***": "",
     "prepare": "yarn run build",
-    "postinstall": "husky install",
+    "_postinstall": "husky install",
     "prepublishOnly": "yarn test && yarn run lint && pinst --disable",
     "postpublish": "pinst --enable"
   },
