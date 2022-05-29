@@ -189,7 +189,7 @@ export async function InvokeMain<T>(
 ): Promise<unknown | void> {
   let result;
   if (!window.freik) throw Error('nope');
-  if (key) {
+  if (!Type.isUndefined(key)) {
     log(`Invoking main("${channel}", "...")`);
     result = (await window.freik.ipc.invoke(channel, key)) as unknown;
     log(`Invoke main ("${channel}" "...") returned:`);

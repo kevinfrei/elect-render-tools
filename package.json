@@ -1,6 +1,6 @@
 {
   "name": "@freik/elect-render-utils",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "Kevin Frei's Electron Render utilities",
   "module": "./lib/esm/index.js",
   "main": "./lib/cjs/index.js",
@@ -36,14 +36,14 @@
   },
   "homepage": "https://github.com/kevinfrei/elect-render-tools#readme",
   "peerDependencies": {
-    "@freik/core-utils": "^1.1.1",
-    "@freik/elect-main-utils": "^0.2.3",
-    "@freik/electron-renderer": "^0.2.2",
-    "@freik/web-utils": "^0.3.2",
-    "electron": "^17.4.5",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
-    "recoil": "^0.7.2"
+    "@freik/core-utils": ">=1.1.1",
+    "@freik/elect-main-utils": ">=0.2.3",
+    "@freik/electron-renderer": ">=0.2.2",
+    "@freik/web-utils": ">=0.3.2",
+    "electron": ">=17.4.5",
+    "react": ">=17.0.2",
+    "react-dom": ">=17.0.2",
+    "recoil": ">=0.6.0"
   },
   "devDependencies": {
     "@freik/build-tools": "^3.2.2",
@@ -76,7 +76,7 @@
     "ts-jest": "^27.1.5",
     "typedoc": "^0.22.15",
     "typedoc-plugin-markdown": "^3.12.1",
-    "typescript": "^4.6.4"
+    "typescript": "^4.7.2"
   },
   "files": [
     "lib/**/*"

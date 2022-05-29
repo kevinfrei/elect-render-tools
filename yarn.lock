@@ -4192,7 +4192,7 @@ __metadata:
     ts-jest: ^27.1.5
     typedoc: ^0.22.15
     typedoc-plugin-markdown: ^3.12.1
-    typescript: ^4.6.4
+    typescript: ^4.7.2
   peerDependencies:
     "@freik/core-utils": ^1.1.1
     "@freik/elect-main-utils": ^0.2.3
@@ -17067,6 +17067,16 @@ typescript@^4.6.4:
   languageName: node
   linkType: hard
 
+typescript@^4.7.2:
+  version: 4.7.2
+  resolution: "typescript@npm:4.7.2"
+  bin:
+    tsc: bin/tsc
+    tsserver: bin/tsserver
+  checksum: 5163585e6b56410f77d5483b698d9489bbee8902c99029eb70cf6d21525a186530ce19a00951af84eefd4a131cc51d0959f5118e25e70ab61f45ac4057dbd1ef
+  languageName: node
+  linkType: hard
+
 "typescript@patch:typescript@^4.6.4#~builtin<compat/typescript>":
   version: 4.6.4
   resolution: "typescript@patch:typescript@npm%3A4.6.4#~builtin<compat/typescript>::version=4.6.4&hash=32657b"
@@ -17074,6 +17084,16 @@ typescript@^4.6.4:
     tsc: bin/tsc
     tsserver: bin/tsserver
   checksum: 984becf501fe4a0dec5f7fd7bed69785ee84a777e8c6fae5bec7241ac81467ea03d0b6211fb54997dc66e204608a9b70c4e56042566042f8348d3356b8a70f71
+  languageName: node
+  linkType: hard
+
+"typescript@patch:typescript@^4.7.2#~builtin<compat/typescript>":
+  version: 4.7.2
+  resolution: "typescript@patch:typescript@npm%3A4.7.2#~builtin<compat/typescript>::version=4.7.2&hash=32657b"
+  bin:
+    tsc: bin/tsc
+    tsserver: bin/tsserver
+  checksum: aadd2fac191480ec2ce6fc9b5a7d27f3595bd4575ab037cfd25d292f75197c7135a4663c266047b2669261436dd7f43455eda5d778218baf9940043e6c02f7d9
   languageName: node
   linkType: hard
 
