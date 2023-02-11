@@ -100,20 +100,6 @@ function HandleMessage(message: unknown): void {
 
 declare let window: ElectronWindow;
 
-function getHostOs(): 'mac' | 'win' | 'lin' | 'unk' {
-  const ua = navigator.userAgent;
-  if (ua.indexOf('Macintosh') >= 0) {
-    return 'mac';
-  }
-  if (ua.indexOf('Windows') >= 0) {
-    return 'win';
-  }
-  if (ua.indexOf('Linux') >= 0) {
-    return 'lin';
-  }
-  return 'unk';
-}
-
 function listener(_event: IpcRendererEvent, data: unknown) {
   if (
     Type.isArray(data) &&
@@ -134,7 +120,6 @@ function listener(_event: IpcRendererEvent, data: unknown) {
 export function InitialWireUp(): () => void {
   if (window.electronConnector !== undefined) {
     log('ipc is being set up!');
-    window.electronConnector.hostOs = getHostOs();
     // Set up listeners for any messages that we might want to asynchronously
     // send from the main process
     window.electronConnector.ipc.on('async-data', listener);
