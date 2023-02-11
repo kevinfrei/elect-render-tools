@@ -1,8 +1,9 @@
 import { Type } from '@freik/core-utils';
 import { NativeImage, OpenDialogSyncOptions } from 'electron';
-import { CallMain, FreikWindow } from './ipc.js';
+import { CallMain } from './ipc.js';
+import { ElectronWindow } from './types.js';
 
-declare let window: FreikWindow;
+declare let window: ElectronWindow;
 
 /**
  * NYI! This used to work, but now it needs to get support from the main
@@ -11,7 +12,10 @@ declare let window: FreikWindow;
  * @returns True if the app is in Development mode
  */
 export function IsDev(): boolean {
-  return window.freik !== undefined && window.freik.isDev === true;
+  return (
+    window.electronConnector !== undefined &&
+    window.electronConnector.isDev === true
+  );
 }
 
 /**
@@ -62,5 +66,7 @@ export async function ShowOpenDialog(
  * @returns An Electron NativeImage type (which can be assigned to an img elem)
  */
 export function ImageFromClipboard(): NativeImage | undefined {
-  return window.freik ? window.freik.clipboard.readImage() : undefined;
+  return window.electronConnector
+    ? window.electronConnector.clipboard.readImage()
+    : undefined;
 }

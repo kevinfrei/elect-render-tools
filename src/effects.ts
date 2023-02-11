@@ -5,41 +5,18 @@ import {
   Type,
   Unpickle,
 } from '@freik/core-utils';
-import { Fail, onRejected } from '@freik/web-utils';
-import { AtomEffect, DefaultValue, RecoilState } from 'recoil';
+import { AtomEffectParams, Fail, onRejected } from '@freik/web-utils';
+import { AtomEffect, DefaultValue } from 'recoil';
 import {
-  ListenKey,
   ReadFromStorage,
   Subscribe,
   Unsubscribe,
   WriteToStorage,
 } from './ipc.js';
+import { ListenKey } from './types.js';
 
 const log = MakeLogger('freik-effects');
 const err = MakeError('freik-effects-err');
-
-/** @ignore */
-export type AtomEffectParams<T> = {
-  node: RecoilState<T>;
-  trigger: 'get' | 'set';
-  // Callbacks to set or reset the value of the atom.
-  // This can be called from the atom effect function directly to initialize the
-  // initial value of the atom, or asynchronously called later to change it.
-  setSelf: (
-    newVal:
-      | T
-      | DefaultValue
-      | Promise<T | DefaultValue> // Only allowed for initialization at this time
-      | ((curVal: T | DefaultValue) => T | DefaultValue),
-  ) => void;
-  resetSelf: () => void;
-
-  // Subscribe to changes in the atom value.
-  // The callback is not called due to changes from this effect's own setSelf().
-  onSet: (
-    func: (newValue: T | DefaultValue, oldValue: T | DefaultValue) => void,
-  ) => void;
-};
 
 /**
  * At atom effect that uses the provided stringification/destringification

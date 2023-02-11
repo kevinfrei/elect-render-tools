@@ -1,11 +1,9 @@
 import { MakeError, MakeLogger, SeqNum, Type } from '@freik/core-utils';
-import { IpcRenderer, IpcRendererEvent } from 'electron';
+import { IpcRendererEvent } from 'electron';
+import { ElectronWindow, ListenKey, MessageHandler } from './types';
 
 const log = MakeLogger('ipc');
 const err = MakeError('ipc-err');
-
-export type ListenKey = { key: string; id: string };
-export type MessageHandler = (val: unknown) => void;
 
 /**
  * @async
@@ -100,40 +98,21 @@ function HandleMessage(message: unknown): void {
   }
 }
 
-type ReadFile1 = (
-  path: string | URL,
-  options?: { encoding?: null; flag?: string | number } | null,
-) => Promise<Buffer>;
+declare let window: ElectronWindow;
 
-type ReadFile2 = (
-  path: string | URL,
-  options:
-    | { encoding: BufferEncoding; flag?: string | number }
-    | BufferEncoding,
-) => Promise<string>;
-
-type ReadFile3 = (
-  path: string | URL,
-  options?:
-    | { flag?: string | number; encoding?: BufferEncoding | null | undefined }
-    | BufferEncoding
-    | null,
-) => Promise<string | Buffer>;
-
-type FreikConnector = {
-  ipc: IpcRenderer;
-  isDev: boolean;
-  clipboard: Electron.Clipboard;
-  readFile: ReadFile1 | ReadFile2 | ReadFile3;
-};
-
-/** @ignore */
-export interface FreikWindow extends Window {
-  freik?: FreikConnector;
-  initApp?: () => void;
+function getHostOs(): 'mac' | 'win' | 'lin' | 'unk' {
+  const ua = navigator.userAgent;
+  if (ua.indexOf('Macintosh') >= 0) {
+    return 'mac';
+  }
+  if (ua.indexOf('Windows') >= 0) {
+    return 'win';
+  }
+  if (ua.indexOf('Linux') >= 0) {
+    return 'lin';
+  }
+  return 'unk';
 }
-
-declare let window: FreikWindow;
 
 function listener(_event: IpcRendererEvent, data: unknown) {
   if (
@@ -153,23 +132,27 @@ function listener(_event: IpcRendererEvent, data: unknown) {
 
 /** @ignore */
 export function InitialWireUp(): () => void {
-  if (window.freik !== undefined) {
-    log('ipc is being set!');
+  if (window.electronConnector !== undefined) {
+    log('ipc is being set up!');
+    window.electronConnector.hostOs = getHostOs();
     // Set up listeners for any messages that we might want to asynchronously
     // send from the main process
-    window.freik.ipc.on('async-data', listener);
+    window.electronConnector.ipc.on('async-data', listener);
     // get the isDev value (because electron-is-dev doesn't work in the renderer)
     CallMain('is-dev', '', Type.isBoolean)
       .then((isdev) => {
-        if (window.freik !== undefined && Type.isBoolean(isdev)) {
-          window.freik.isDev = isdev;
+        if (window.electronConnector !== undefined && Type.isBoolean(isdev)) {
+          window.electronConnector.isDev = isdev;
         }
       })
       .catch(err);
   } else {
-    err('ipcSet is not set!');
+    err('ipc is not configured');
+    err('You should call @freik/electron-renderer: InitRender()');
+    err('Probably from within your static/renderer.ts file');
   }
-  return () => window.freik?.ipc.removeListener('async-data', listener);
+  return () =>
+    window.electronConnector?.ipc.removeListener('async-data', listener);
 }
 
 /**
@@ -188,14 +171,17 @@ export async function InvokeMain<T>(
   key?: T,
 ): Promise<unknown | void> {
   let result;
-  if (!window.freik) throw Error('nope');
+  if (!window.electronConnector) throw Error('nope');
   if (!Type.isUndefined(key)) {
     log(`Invoking main("${channel}", "...")`);
-    result = (await window.freik.ipc.invoke(channel, key)) as unknown;
+    result = (await window.electronConnector.ipc.invoke(
+      channel,
+      key,
+    )) as unknown;
     log(`Invoke main ("${channel}" "...") returned:`);
   } else {
     log(`Invoking main("${channel}")`);
-    result = (await window.freik.ipc.invoke(channel)) as unknown;
+    result = (await window.electronConnector.ipc.invoke(channel)) as unknown;
     log(`Invoke main ("${channel}") returned:`);
   }
   log(result);
