@@ -116,7 +116,7 @@ export function oneWayFromMain<T>(
     if (asyncKey && asyncDataCoercion) {
       lKey = Subscribe(asyncKey, (val: unknown) => {
         const theRightType = asyncDataCoercion(val);
-        if (theRightType) {
+        if (!Type.isUndefined(theRightType)) {
           log(`Async data for ${node.key}:`);
           log(theRightType);
           setSelf(theRightType);
@@ -193,7 +193,7 @@ export function bidirectionalSyncWithTranslate<T>(
     if (asyncUpdates) {
       lKey = Subscribe(node.key, (val: unknown) => {
         const theRightType = fromUnpickled(val);
-        if (theRightType) {
+        if (typeof theRightType !== 'undefined') {
           log(`Async data for ${node.key}:`);
           log(theRightType);
           setSelf(theRightType);
