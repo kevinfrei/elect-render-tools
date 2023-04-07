@@ -1,6 +1,6 @@
 {
   "name": "@freik/elect-render-utils",
-  "version": "0.4.4",
+  "version": "0.5.0",
   "description": "Kevin Frei's Electron Render utilities",
   "module": "./lib/esm/index.js",
   "main": "./lib/cjs/index.js",
