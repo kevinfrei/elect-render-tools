@@ -1,9 +1,19 @@
-import { MakeError, MakeLogger, SeqNum, Type } from '@freik/core-utils';
+import SeqNum from '@freik/seqnum';
+import {
+  hasField,
+  hasStrField,
+  isArray,
+  isBoolean,
+  isDefined,
+  isObjectNonNull,
+  isString,
+} from '@freik/typechk';
+import debug from 'debug';
 import { IpcRendererEvent } from 'electron';
 import { ElectronWindow, ListenKey, MessageHandler } from './types';
 
-const log = MakeLogger('ipc');
-const err = MakeError('ipc-err');
+const log = debug('@freik:elect-render-tools:ipc:log');
+const err = debug('@freik:elect-render-tools:ipc:error');
 
 /**
  * @async
@@ -13,7 +23,7 @@ const err = MakeError('ipc-err');
  * @returns A promise that resolves to the value read (or void if none found)
  */
 export async function ReadFromStorage(key: string): Promise<string | void> {
-  return await CallMain('read-from-storage', key, Type.isString);
+  return await CallMain('read-from-storage', key, isString);
 }
 
 /**
@@ -76,9 +86,9 @@ function HandleMessage(message: unknown): void {
   // { artists: ..., albums: ..., songs: ... } will invoke listeners for
   // all three of those 'messages'
   let handled = false;
-  if (Type.isObjectNonNull(message)) {
+  if (isObjectNonNull(message)) {
     for (const id in message) {
-      if (Type.isString(id) && Type.has(message, id)) {
+      if (hasStrField(message, id)) {
         const lstn = listeners.get(id);
         if (lstn) {
           for (const handler of lstn.values()) {
@@ -102,9 +112,9 @@ declare let window: ElectronWindow;
 
 function listener(_event: IpcRendererEvent, data: unknown) {
   if (
-    Type.isArray(data) &&
-    Type.isObject(data[0]) &&
-    Type.has(data[0], 'message')
+    isArray(data) &&
+    isObjectNonNull(data[0]) &&
+    hasField(data[0], 'message')
   ) {
     log('*** Async message formed properly:');
     log(data[0]);
@@ -124,9 +134,9 @@ export function InitialWireUp(): () => void {
     // send from the main process
     window.electronConnector.ipc.on('async-data', listener);
     // get the isDev value (because electron-is-dev doesn't work in the renderer)
-    CallMain('is-dev', '', Type.isBoolean)
+    CallMain('is-dev', '', isBoolean)
       .then((isdev) => {
-        if (window.electronConnector !== undefined && Type.isBoolean(isdev)) {
+        if (window.electronConnector !== undefined && isBoolean(isdev)) {
           window.electronConnector.isDev = isdev;
         }
       })
@@ -157,7 +167,7 @@ export async function InvokeMain<T>(
 ): Promise<unknown | void> {
   let result;
   if (!window.electronConnector) throw Error('nope');
-  if (!Type.isUndefined(key)) {
+  if (isDefined(key)) {
     log(`Invoking main("${channel}", "...")`);
     result = (await window.electronConnector.ipc.invoke(
       channel,

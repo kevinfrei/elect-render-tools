@@ -1,11 +1,6 @@
-import {
-  MakeError,
-  MakeLogger,
-  Pickle,
-  Type,
-  Unpickle,
-} from '@freik/core-utils';
+import { Pickle, Unpickle, isPromise, isUndefined } from '@freik/typechk';
 import { AtomEffectParams, Fail, onRejected } from '@freik/web-utils';
+import debug from 'debug';
 import { AtomEffect, DefaultValue } from 'recoil';
 import {
   ReadFromStorage,
@@ -15,8 +10,8 @@ import {
 } from './ipc.js';
 import { ListenKey } from './types.js';
 
-const log = MakeLogger('freik-effects');
-const err = MakeError('freik-effects-err');
+const log = debug('@freik:elect-render-tools:effects:log');
+const err = debug('@freik:elect-render-tools:effects:error');
 
 /**
  * At atom effect that uses the provided stringification/destringification
@@ -104,7 +99,7 @@ export function oneWayFromMain<T>(
   }: AtomEffectParams<T>): (() => void) | void => {
     if (trigger === 'get') {
       const res = get();
-      if (!Type.isPromise(res)) {
+      if (!isPromise(res)) {
         setSelf(res);
       } else {
         res
@@ -116,7 +111,7 @@ export function oneWayFromMain<T>(
     if (asyncKey && asyncDataCoercion) {
       lKey = Subscribe(asyncKey, (val: unknown) => {
         const theRightType = asyncDataCoercion(val);
-        if (!Type.isUndefined(theRightType)) {
+        if (!isUndefined(theRightType)) {
           log(`Async data for ${node.key}:`);
           log(theRightType);
           setSelf(theRightType);

@@ -1,7 +1,9 @@
 {
   "search.exclude": {
     "**/node_modules": true,
-    "lib": true
+    "lib": true,
+    "**/.yarn": true,
+    "**/.pnp.*": true
   },
   "files.exclude": {
     "**/.git": true,
@@ -17,12 +19,15 @@
     ".eslintcache": true,
     ".husky": true
   },
-  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.tsdk": ".yarn/sdks/typescript/lib",
   "editor.codeActionsOnSave": {
     "source.organizeImports": true
   },
   "editor.formatOnSave": true,
   "editor.tabSize": 2,
   "prettier.configPath": ".prettierrc",
-  "json.format.enable": false
+  "json.format.enable": false,
+  "eslint.nodePath": ".yarn/sdks",
+  "prettier.prettierPath": ".yarn/sdks/prettier/index.js",
+  "typescript.enablePromptUseWorkspaceTsdk": true
 }

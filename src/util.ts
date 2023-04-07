@@ -1,4 +1,4 @@
-import { Type } from '@freik/core-utils';
+import { isArrayOfString } from '@freik/typechk';
 import { NativeImage, OpenDialogSyncOptions } from 'electron';
 import { CallMain } from './ipc.js';
 import { ElectronWindow } from './types.js';
@@ -56,7 +56,7 @@ export function SetInit(func: () => void): void {
 export async function ShowOpenDialog(
   options: OpenDialogSyncOptions,
 ): Promise<string[] | void> {
-  return await CallMain('show-open-dialog', options, Type.isArrayOfString);
+  return await CallMain('show-open-dialog', options, isArrayOfString);
 }
 
 /**
