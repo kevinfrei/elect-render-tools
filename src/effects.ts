@@ -12,6 +12,7 @@ import { ListenKey } from './types.js';
 
 const log = debug('@freik:elect-render-tools:effects:log');
 const err = debug('@freik:elect-render-tools:effects:error');
+err.enabled = true;
 
 /**
  * At atom effect that uses the provided stringification/destringification

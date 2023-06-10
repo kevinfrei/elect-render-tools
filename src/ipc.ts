@@ -14,6 +14,7 @@ import { ElectronWindow, ListenKey, MessageHandler } from './types';
 
 const log = debug('@freik:elect-render-tools:ipc:log');
 const err = debug('@freik:elect-render-tools:ipc:error');
+err.enabled = true;
 
 /**
  * @async
