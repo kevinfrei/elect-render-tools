@@ -1,6 +1,6 @@
+import { MakeLog } from '@freik/logger';
 import { Pickle, Unpickle, isPromise, isUndefined } from '@freik/typechk';
 import { AtomEffectParams, Fail, onRejected } from '@freik/web-utils';
-import debug from 'debug';
 import { AtomEffect, DefaultValue } from 'recoil';
 import {
   ReadFromStorage,
@@ -10,9 +10,7 @@ import {
 } from './ipc.js';
 import { ListenKey } from './types.js';
 
-const log = debug('@freik:elect-render-tools:effects:log');
-const err = debug('@freik:elect-render-tools:effects:error');
-err.enabled = true;
+const { log, wrn } = MakeLog('@freik:elect-render-tools:effects');
 
 /**
  * At atom effect that uses the provided stringification/destringification
@@ -117,8 +115,8 @@ export function oneWayFromMain<T>(
           log(theRightType);
           setSelf(theRightType);
         } else {
-          err(`Async invalid data received for ${node.key}:`);
-          err(val);
+          wrn(`Async invalid data received for ${node.key}:`);
+          wrn(val);
         }
       });
     }
@@ -194,8 +192,8 @@ export function bidirectionalSyncWithTranslate<T>(
           log(theRightType);
           setSelf(theRightType);
         } else {
-          err(`Async invalid data received for ${node.key}:`);
-          err(val);
+          wrn(`Async invalid data received for ${node.key}:`);
+          wrn(val);
         }
       });
     }

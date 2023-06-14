@@ -1,3 +1,4 @@
+import { MakeLog } from '@freik/logger';
 import SeqNum from '@freik/seqnum';
 import {
   hasField,
@@ -8,13 +9,10 @@ import {
   isObjectNonNull,
   isString,
 } from '@freik/typechk';
-import debug from 'debug';
 import { IpcRendererEvent } from 'electron';
 import { ElectronWindow, ListenKey, MessageHandler } from './types';
 
-const log = debug('@freik:elect-render-tools:ipc:log');
-const err = debug('@freik:elect-render-tools:ipc:error');
-err.enabled = true;
+const { log, wrn } = MakeLog('@freik:elect-render-tools:ipc');
 
 /**
  * @async
@@ -102,10 +100,10 @@ function HandleMessage(message: unknown): void {
     }
   }
   if (!handled) {
-    err('**********');
-    err('Unhandled message:');
-    err(message);
-    err('**********');
+    wrn('**********');
+    wrn('Unhandled message:');
+    wrn(message);
+    wrn('**********');
   }
 }
 
@@ -121,9 +119,9 @@ function listener(_event: IpcRendererEvent, data: unknown) {
     log(data[0]);
     HandleMessage(data[0].message);
   } else {
-    err('>>> Async malformed message begin');
-    err(data);
-    err('<<< Async malformed message end');
+    wrn('>>> Async malformed message begin');
+    wrn(data);
+    wrn('<<< Async malformed message end');
   }
 }
 
@@ -141,11 +139,11 @@ export function InitialWireUp(): () => void {
           window.electronConnector.isDev = isdev;
         }
       })
-      .catch(err);
+      .catch(wrn);
   } else {
-    err('ipc is not configured');
-    err('You should call @freik/electron-renderer: InitRender()');
-    err('Probably from within your static/renderer.ts file');
+    wrn('ipc is not configured');
+    wrn('You should call @freik/electron-renderer: InitRender()');
+    wrn('Probably from within your static/renderer.ts file');
   }
   return () =>
     window.electronConnector?.ipc.removeListener('async-data', listener);
@@ -203,7 +201,7 @@ export async function CallMain<R, T>(
   if (typecheck(result)) {
     return result;
   }
-  err(
+  wrn(
     `CallMain(${channel}, <T>, ${typecheck.name}(...)) result failed typecheck`,
     result,
   );
